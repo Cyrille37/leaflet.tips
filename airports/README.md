@@ -6,3 +6,5 @@ Need Php to run *airports.php* for querying the sqlite database *airports.sqlite
 
 * Define a very simple Leaflet Control : L.Control.Information ;
 * Querying data on moveend Leaflet map's event and create Markers on data arrived.
+
+![drag](./screenshot.png.png)
