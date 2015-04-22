@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Leaflet demo - airports</title>
+
+        <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+
+        <!-- Leaflet CSS --> 
+        <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+        <!--[if lte IE 8]><link rel="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.ie.css" /><![endif]-->
+        <!-- Leaflet JavaScript -->
+        <script src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+
+		<style>
+			.leaflet-control-information {
+			    background-color: #fff;
+				color: black;
+				line-height: 26px;
+				text-indent: 1px;
+				padding: 2px 8px;
+			}
+			/*
+    height: 26px;
+    width: 26px;*/
+		</style>
+    </head>
+    <body>
+        <h1>Leaflet demo - airports</h1>
+
+        <div id="coords" style="">0.0 0.0</div>
+        <div id="map" style="width: 640px; height: 480px; "></div>
+
+        <script type="text/javascript">
+
+		var map, airportsLayer, airportIcon, infoCtrl ;
+
+		$(function()
+		{
+            map = new L.Map('map',{
+                minZoom: 1, maxZoom:18
+            });
+            map.on('load', onMapMoveend );
+            map.on('mousemove', onMouseMove );
+
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map &amp; data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+            var osm = new L.TileLayer(osmUrl,{ attribution: osmAttrib});
+            map.addLayer(osm);
+
+			infoCtrl = new L.Control.Information().addTo(map);
+
+            airportsLayer = new L.LayerGroup();
+            map.addLayer(airportsLayer);
+
+            airportIcon = new L.Icon({
+                iconUrl: 'airport-icon.gif',
+                iconSize: new L.Point(25, 25)
+            });
+
+            var viewPoint = new L.LatLng( 47.33, 0.58 );
+            map.setView(viewPoint,7);
+ 
+            map.on('moveend', onMapMoveend );
+
+            // Have to call it to fire 'moveend' event.
+            //map.setZoom(7);
+
+			});
+
+            function onMapMoveend()
+            {
+                var bounds = map.getBounds();
+                dbg( "onMapMoveend() : SW="+bounds.getSouthWest() + ", NE=" + bounds.getNorthEast() +", zoom="+map.getZoom()  );
+
+                /*var m = new L.Marker(new L.LatLng( 47.33, 0.58 ));
+                m.bindPopup("Airport");
+                map.addLayer(m);*/
+
+                var url = "./airports.php?action=getAirportsInBox"
+                    + "&swLat=" + bounds.getSouthWest().lat
+                    + "&swLon=" + bounds.getSouthWest().lng
+                    + "&neLat=" + bounds.getNorthEast().lat
+                    + "&neLon=" + bounds.getNorthEast().lng
+                ;
+                $.get(url, onDataArrived);
+            }
+
+            function onDataArrived(data, textStatus, jqXHR)
+            {
+                dbg('onDataArrived() ' +textStatus);
+
+                airportsLayer.clearLayers();
+
+                var c = 0 ;
+                $(data).find('wpt').each(function() {
+
+                    var wpt = $(this);
+                    var m = new L.Marker(
+						new L.LatLng( wpt.attr('lat')*1, wpt.attr('lon')*1 ),
+						{
+							icon: airportIcon
+						}
+					);
+					var desc = $(this).find('desc').text().split(',');
+					var icao = desc[0].replace(' ', '');
+					var country = desc[1].replace(' ', '');
+                    m.bindPopup( $(this).find('name').text() +', '+country+', '+icao+'<br/>'
+						+ '<a href="http://www.pictaero.com/fr/airports/airport,'+country.toLowerCase()+','+icao.toLowerCase()+'" target="_blanck">PictAreo</a>, '
+						+ '<a href="http://www.fr.allmetsat.com/metar-taf/france.php?icao='+icao.toUpperCase()+'" target="_blanck">AllMetSat</a>'
+						);
+                    airportsLayer.addLayer(m);
+                    c ++ ;
+
+                    //dbg( wpt.attr('lat') +'/'+m.getLatLng().lat +' ,' + wpt.attr('lon')+"/"+m.getLatLng().lng  );
+                });
+
+                dbg( c + ' airports added.');
+
+				infoCtrl.update( c + ' airports loaded.');
+            }
+
+            function onMouseMove(me)
+            {
+                //dbg('onMouseMove() '+me.latlng+","+me.layerPoint);
+                var o=document.getElementById('coords');
+                if( o!=null )
+                    o.innerHTML = me.latlng ;
+            }
+            
+            function dbg( msg )
+            {
+                if(console && console.log)
+                {
+                    console.log(msg);
+                }
+                var o=document.getElementById('dbg');
+                if( o!=null )
+                    o.innerHTML += "<br/>" + msg ;
+            }
+
+			L.Control.Information = L.Control.extend({
+
+				container: null, 
+				options: {
+					position: 'topleft'
+				},
+				initialize: function (foo, options) {
+					// ...
+					L.Util.setOptions(this, options);
+				},
+				onAdd: function (map) {
+					this.container = L.DomUtil.create('div', 'leaflet-control-information leaflet-bar leaflet-control');
+					this.container.innerHTML = 'test';
+					return this.container;
+				},
+				update: function( html )
+				{
+					this.container.innerHTML = html ;
+				}
+				
+			});
+
+        </script>
+
+        <!-- <div id="dbg">debug</div> -->
+
+    </body>
+</html>
