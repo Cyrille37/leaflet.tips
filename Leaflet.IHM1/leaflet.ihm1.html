@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title>Leaflet IHM1</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<link href="lib/leaflet.css" rel="stylesheet" media="screen"/>
+		<link href="lib/leaflet.zoomdisplay.css" rel="stylesheet" media="screen"/>
+		<link href="lib/Control.Geocoder.css" rel="stylesheet" media="screen"/>
+
+		<style >
+			#map {
+				height: 240px;
+			}
+
+			#loader {
+				background-image:url('loader.gif');
+				background-position:center;
+				background-repeat:no-repeat;
+				position: absolute;
+				top: 45%; left: 45%;
+				width: 128px; height: 128px;
+				display: none;
+				z-index:10000;
+			}
+
+		</style>
+	</head>
+<body>
+	
+	<div id="map">
+		<div id="loader"></div>
+	</div>
+
+	<script src="lib/leaflet.js"></script>
+	<script src="lib/leaflet.zoomdisplay.js"></script>
+	<script src="lib/leaflet-hash.js"></script>
+	<script src="lib/Control.Geocoder.js"></script>
+
+	<script type="text/javascript">
+	"use strict";
+
+	var quaiPaulBert =  [47.40230, 0.69342];
+	var rueLittre =  [47.3956631,0.6820366];
+	var viewCenter = rueLittre ;
+	var viewZoom = 13 ;
+
+	var map = null ;
+
+	window.onload = function ()
+	{
+		//map = L.map('map').setView(viewCenter, viewZoom );
+		map = L.map('map', {
+			center: viewCenter,
+			zoom: viewZoom,
+			trackResize: true
+		});
+
+		// Control geocoder
+
+		// A simple geocoder for Leaflet that by default uses OSM/Nominatim.
+		var geocoder = L.Control.geocoder({
+			collapsed: false,
+			placeholder: 'Rechercher une adresse...',
+			position: 'topleft'
+		})
+		.addTo(map);
+
+		// Repositionne les controles du zoom pour qu'ils soit après le controle GeoCoder
+		map.zoomControl.setPosition('topleft');
+		map.zoomDisplayControl.setPosition('topleft');
+
+		// Control échelle
+
+		L.control.scale({
+			position: 'bottomleft'
+		})
+		.addTo(map);
+
+		var OsmDataAttr = 'Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
+		var osmFr = new L.TileLayer(
+			'http://{s}.tile.openstreetmap.fr/{type}/{z}/{x}/{y}.png', {
+			minZoom: 1, 
+			maxZoom: 20, 
+			type: 'osmfr',
+			attribution: OsmDataAttr+', Map by &copy; <a href="http://openstreetmap.fr">OSM_Fr</a>'
+		});
+		//osmFr.addTo(map);
+		map.addLayer(osmFr);
+
+		map.on('moveend', onMapMoveEnd);
+
+		window.addEventListener('resize', function(event){
+			
+			console.log('onresize()');
+
+			//map.height = screen.availHeight ;
+			//map.height = window.innerHeight ;
+			//L.DomUtil.addClass(map._container, 'h' );
+
+			//.width($(window).width());
+			//map.invalidateSize();
+		});
+
+		// Leaflet-hash lets you to add dynamic URL hashes to web pages with Leaflet maps.
+		// You can easily link users to specific map views.
+		// Warning: keep this instruction at the end of initialization - Cyrille
+		var hash = new L.Hash(map);
+
+	}
+
+	function onMapMoveEnd()
+	{
+		//console.log('onMapMoveEnd()');
+		var bounds = map.getBounds();
+
+	}// onMapMoveEnd
+
+	</script>
+
+</body>
+</html>

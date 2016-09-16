@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Leaflet demo - essais05</title>
+		<!--
+		http://leaflet.cloudmade.com/
+		-->
+		<meta charset="utf-8" />
+
+		<!-- Leaflet CSS --> 
+		<link rel="stylesheet" href="Leaflet-0.3.156/leaflet.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="Leaflet-0.3.156/leaflet.ie.css" /><![endif]-->
+		<!-- Leaflet JavaScript -->
+		<script src="Leaflet-0.3.156/leaflet.js"></script>
+
+	</head>
+	<body>
+		<h1>Leaflet demo - essais05</h1>
+
+		<div id="map" style="width: 640px; height: 480px; "></div>
+
+		<script type="text/javascript" src="essais05.js"></script>
+
+		<script type="text/javascript">
+
+			var map = new L.Map('map',{
+				minZoom: 1, maxZoom:18
+			});
+
+			var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+			var osmAttrib='Map data © <a href="http://www.openstreetmap.org/">OpenStreetMap</a>';
+			var osm = new L.TileLayer(osmUrl,{ attribution: osmAttrib});
+			map.addLayer(osm);
+
+			var dataEnDur = {
+				"type": "FeatureCollection",
+				"features": [
+					{
+						"geometry": {
+							"type": "Point",
+							"coordinates": [0.73, 47.52]
+						},
+						"type": "Feature",
+						"properties": {
+							"popupContent": "PREMIER POINT"
+						}
+					},
+					{
+						"geometry": {
+							"type": "Point",
+							"coordinates": [0.31, 47.68]
+						},
+						"type": "Feature",
+						"properties": {
+							"popupContent": "ENCORE UN POINT!",
+							"style":{"color":'#F00',"fillColor":'#0F0', "fillOpacity":1 },
+							"radius": 24
+						}
+					}
+				]
+			};
+
+			//var myLayer = new L.GeoJSON(dataEnDur);
+			var myLayer = new L.GeoJSON(null
+			, {
+				pointToLayer: function (latlng){
+					return new L.CircleMarker(latlng/*, {
+						radius: 8,
+						fillColor: "#ff7800",
+						color: "#000",
+						weight: 1,
+						opacity: 1,
+						fillOpacity: 0.8
+						}*/
+						);
+					}
+				}
+			);
+-
+			myLayer.on("featureparse", function (e) {
+				var popupContent = "";
+				if( e.properties )
+				{
+					if ( e.properties.popupContent) {
+						popupContent += e.properties.popupContent;
+					}
+					e.layer.bindPopup(popupContent);
+					
+					if ( e.properties.style && e.layer.setStyle) {
+						e.layer.setStyle(e.properties.style);
+					}
+						
+					/* Ca, ca ne fonctionne pas => Exception!
+					*if ( e.properties.radius && e.layer.setRadius) {
+						e.layer.setRadius(e.properties.radius);
+					}*/
+				}
+			});
+
+			map.addLayer(myLayer);
+
+			myLayer.addGeoJSON(dataEnDur);
+			myLayer.addGeoJSON(dataEnMou);
+
+
+
+			var data2 = {
+				"type": "FeatureCollection",
+				"features": [
+					{
+						"geometry": {"type": "Point", "coordinates": [0.1, 46.5]},
+						"type": "Feature",
+						"properties": {
+						}
+					},
+					{
+						"geometry": {"type": "Point", "coordinates": [0.5, 46.5]},
+						"type": "Feature",
+						"properties": {
+						}
+					}
+				]
+			};
+
+			var LeafIcon = L.Icon.extend({
+				iconUrl: '.leaf-green.png',
+				shadowUrl: '.leaf-shadow.png',
+				iconSize: new L.Point(38, 95),
+				shadowSize: new L.Point(68, 95),
+				iconAnchor: new L.Point(22, 94),
+				popupAnchor: new L.Point(-3, -76)
+			});
+			var greenIcon = new LeafIcon(),
+    		redIcon = new LeafIcon('leaf-red.png'),
+    		orangeIcon = new LeafIcon('leaf-orange.png');
+
+			var myLayer2 = new L.GeoJSON(null);
+			myLayer2.addGeoJSON(data2);
+
+			map.addLayer(myLayer2);
+
+
+
+
+			var viewPoint = new L.LatLng( 47.33, 0.58 );
+			map.setView(viewPoint,7);
+ 
+
+		</script>
+
+		<!-- <div id="dbg">debug</div> -->
+
+	</body>
+</html>

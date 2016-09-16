@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Leaflet base with usefull plugins</title>
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+		<!--link rel="shortcut icon" href="favicon.ico" /-->
+		<!--link rel="stylesheet" href="main.css" media="screen" /-->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+		<link rel="stylesheet" href="brunob-leaflet.fullscreen/Control.FullScreen.css" />
+		<link rel="stylesheet" href="Leaflet-MiniMap-3.3.1/dist/Control.MiniMap.min.css" />
+
+		<style>
+		body {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, #mapid {
+      height: 100%;
+      width: 100%;
+		}
+		</style>
+	</head>
+	<body>
+		<h2>Leaflet base with usefull plugins</h2>
+		<p>
+			<a href="http://leafletjs.com">leaflet</a>,
+			<a href="https://github.com/leaflet-extras/leaflet-providers/">leaflet-providers</a>,
+			<a href="http://brunob.github.com/leaflet.fullscreen">brunob-leaflet.fullscreen</a>,
+			<a href="https://github.com/Norkart/Leaflet-MiniMap">leaflet-MiniMap</a>,
+			<a href="https://github.com/mlevans/leaflet-hash">leaflet-hash</a>
+
+		</p>
+
+		<div id="mapid"></div>
+		<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+		<script src="leaflet-providers-1.1.15/leaflet-providers.js"></script>
+		<script src="brunob-leaflet.fullscreen/Control.FullScreen.js"></script>
+		<script src="Leaflet-MiniMap-3.3.1/dist/Control.MiniMap.min.js"></script>
+		<script src="leaflet-hash/leaflet-hash.js"></script>
+		<script>
+
+		var config = {
+			initial_latlon: [47.4853,0.9571],
+			initial_zoom: 13
+		};
+		var map = L.map('mapid');
+		map.setView(config.initial_latlon, config.initial_zoom);
+
+		// leaflet-hash
+		//
+		var hash = new L.Hash(map);
+
+		// leaflet-providers
+		//
+		//L.tileLayer.provider('Stamen.Watercolor').addTo(map);
+		L.tileLayer.provider('OpenStreetMap.France').addTo(map);
+
+		// Control.MiniMap
+		//
+		var miniMap = new L.Control.MiniMap(
+			L.tileLayer.provider('OpenStreetMap.France')
+		).addTo(map);
+
+		// Control.FullScreen
+		//
+		// create a fullscreen button and add it to the map
+		L.control.fullscreen({
+		  position: 'topleft', // change the position of the button can be topleft, topright, bottomright or bottomleft, defaut topleft
+		  title: null, // change the title of the button, default Full Screen
+		  titleCancel: null, // change the title of the button when fullscreen is on, default Exit Full Screen
+		  content: null, // change the content of the button, can be HTML, default null
+		  forceSeparateButton: true, // force seperate button to detach from zoom buttons, default false
+		  forcePseudoFullscreen: false, // force use of pseudo full screen even if full screen API is available, default false
+		  fullscreenElement: false // Dom element to render in full screen, false by default, fallback to map._container
+		}).addTo(map);
+
+		</script>
+	</body>
+</html>

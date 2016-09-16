@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Empty page</title>
+		<meta name="description" content="" />
+		<meta name="author" content="" />
+		<!--link rel="shortcut icon" href="favicon.ico" /-->
+		<!--link rel="stylesheet" href="main.css" media="screen" /-->
+
+<style type="text/css" media="print">
+	h1 { color: black ; }
+</style>
+
+<style type="text/css" media="screen">
+	h1 {
+		color: green ;
+	}
+	.enBleu {
+		color: blue ;
+	}
+	.enVert {
+		color: yellow ;
+	}
+</style>
+
+
+	</head>
+	<body>
+
+		<h1>Empty page</h1>
+
+		<p id="chap1" class="enBleu" >Exemple avec JQuery</p>
+		
+	<input type="button" onclick="passeEnVert()" value="click moi !" />
+
+	<script src="//code.jquery.com/jquery-2.1.3.min.js" ></script>
+
+	<script>
+
+		var personne = {
+			nom: 'Giquello',
+			prenom: 'Cyrille'
+		};
+
+		console.log( personne.nom );
+
+		var a ;
+		var personnes = [];
+		personnes[0] = personne ;
+		personnes[1] = personne ;
+		
+		for( i=0 ; i < personnes.length ; i=i+1 )
+		{
+			console.log( personnes[i] );
+		}
+
+		function addition( a, b )
+		{
+			return a + b;
+		}
+		console.log( addition( 1, 2) );
+
+		function passeEnVert()
+		{
+			$('.enBleu')
+				.removeClass('enBleu')
+				.addClass('enVert')
+				.css('font-size', '200%') ;
+		}
+
+		function essai1()
+		{
+			var t = { toto: true, age: 15};
+			console.log("hello world !");
+			console.log( t );
+		}
+	</script>
+	
+	</body>
+</html>

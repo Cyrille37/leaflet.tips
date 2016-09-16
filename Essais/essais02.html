@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet - Essais02</title>
+	<meta charset="utf-8" />
+
+<!-- Leaflet CSS --> 
+<link rel="stylesheet" href="Leaflet-0.2.1/leaflet.css" />
+<!--[if lte IE 8]><link rel="stylesheet" href="Leaflet-0.2.1/leaflet.ie.css" /><![endif]-->
+<!-- Leaflet JavaScript -->
+<script src="Leaflet-0.2.1/leaflet.js"></script>
+
+</head>
+<body>
+	<h1>Leaflet - Essais02</h1>
+
+<!-- width equals available horizontal space by default -->
+<div id="map" style="height: 600px"></div>
+
+<script type="text/javascript">
+
+var map = new L.Map('map');
+
+var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+var osmAttrib='Map data © openstreetmap contributors';
+var osm = new L.TileLayer(osmUrl,{minZoom: 8, maxZoom:18, attribution: osmAttrib});
+
+//
+// http://maps.google.fr/maps?q=47.43446,0.719283&hl=fr&ll=47.43393,0.715828&spn=0.005051,0.013025&sll=46.75984,1.738281&sspn=7.619431,12.941406&num=1&vpsrc=6&z=17
+// http://www.openstreetmap.org/?lat=47.43127&lon=0.72093&zoom=15&layers=M
+var viewPoint = new L.LatLng( 47.33, 0.58 );
+map.setView(viewPoint,11);
+
+map.addLayer(osm);
+
+var airportIcon = L.Icon.extend({
+    
+    iconUrl: 'icon-airport.gif',
+    iconSize: new L.Point(50, 50)
+    
+    /*
+    iconUrl: '../docs/images/leaf-green.png',
+    shadowUrl: '../docs/images/leaf-shadow.png',
+    iconSize: new L.Point(38, 95),
+    shadowSize: new L.Point(68, 95),
+    iconAnchor: new L.Point(22, 94),
+    popupAnchor: new L.Point(-3, -76)
+    */
+});
+
+var marker1 = new L.Marker(new L.LatLng(47.43127, 0.72093));
+map.addLayer(marker1);
+marker1.bindPopup("Aéroport");
+
+var airportIcon2 = new airportIcon();
+// create a marker in the given location and add it to the map
+var marker2 = new L.Marker(new L.LatLng(47.27,0.43), {icon: airportIcon2});
+map.addLayer(marker2);
+// attach a given HTML content to the marker and immediately open it
+marker2.bindPopup("LFOT");
+
+var airportIcon3 = new airportIcon();
+// create a marker in the given location and add it to the map
+var marker3 = new L.Marker(new L.LatLng(47.45,0.716), {icon: airportIcon3});
+map.addLayer(marker3);
+// attach a given HTML content to the marker and immediately open it
+marker3.bindPopup("LFOT2");
+
+</script>
+
+<a href="file:///home/cyrille/Code/dev.www/Cartographie/Leaflet/essais02.html">local</a>
+<a href="http://cyrille.giquello.fr/labs/carto/Leaflet/essais02.html">remote</a>
+</body>
+</html>
+

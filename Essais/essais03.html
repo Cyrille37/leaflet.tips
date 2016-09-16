@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Leaflet - Essais03</title>
+        <meta charset="utf-8" />
+
+        <!-- Leaflet CSS --> 
+        <link rel="stylesheet" href="Leaflet-0.2.1/leaflet.css" />
+        <!--[if lte IE 8]><link rel="stylesheet" href="Leaflet-0.2.1/leaflet.ie.css" /><![endif]-->
+        <!-- Leaflet JavaScript -->
+        <script src="Leaflet-0.2.1/leaflet.js"></script>
+
+    </head>
+    <body>
+        <h1>Leaflet - Essais03</h1>
+
+        <a href="#" onclick="addMarkers(); alert('done');">add Markers</a>
+        
+        <!-- width equals available horizontal space by default -->
+        <div id="map" style="height: 400px"></div>
+
+        <script type="text/javascript">
+
+            var map = new L.Map('map');
+
+            var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            var osmAttrib='Map data © openstreetmap contributors';
+            var osm = new L.TileLayer(osmUrl,{minZoom: 8, maxZoom:18, attribution: osmAttrib});
+
+            //
+            // http://maps.google.fr/maps?q=47.43446,0.719283&hl=fr&ll=47.43393,0.715828&spn=0.005051,0.013025&sll=46.75984,1.738281&sspn=7.619431,12.941406&num=1&vpsrc=6&z=17
+            // http://www.openstreetmap.org/?lat=47.43127&lon=0.72093&zoom=15&layers=M
+            var viewPoint = new L.LatLng( 47.33, 0.58 );
+            map.setView(viewPoint,11);
+
+            map.addLayer(osm);
+
+            var markersGroup = new L.LayerGroup();
+            map.addLayer(markersGroup);
+
+            function addMarkers()
+            {
+                var m ;
+                for( i=0; i<10; i++ )
+                {
+                    m = new L.Marker(new L.LatLng(47.43127 - (0.02*i), 0.72093 - (0.02*i) ));
+                    m.bindPopup("Airport");
+                    markersGroup.addLayer(m);
+                }
+
+            }
+        </script>
+
+
+        <a href="file:///home/cyrille/Code/dev.www/Cartographie/Leaflet/essais03.html">local</a>
+        <a href="http://cyrille.giquello.fr/labs/carto/Leaflet/essais03.html">remote</a>
+    </body>
+</html>
